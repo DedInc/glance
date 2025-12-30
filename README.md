@@ -1,6 +1,7 @@
 # Glance
 
-**Minecraft Security Interceptor** — HTTPS MITM tool that protects you from malicious mods and catches attackers.
+**Minecraft Security Interceptor** — Advanced HTTPS MITM tool that protects you from malicious mods and catches attackers.
+
 
 ## Why?
 
@@ -15,7 +16,14 @@ Attackers use Discord webhooks and Telegram bots to receive your stolen data.
 
 ## What it does
 
-Glance intercepts HTTPS traffic from Minecraft, detects these requests, **blocks your data from reaching attackers**, and captures their webhook URLs and bot tokens for reporting.
+Glance intercepts HTTPS traffic from Minecraft, detects malicious requests, **blocks your data from reaching attackers**, and captures their infrastructure for reporting.
+
+### Detection Capabilities
+- **Known Threats**: Discord webhooks, Telegram bots (100% blocked)
+- **Unknown C2 Servers**: Heuristic detection with 8-layer analysis
+- **Custom Malware**: Behavioral pattern recognition
+- **Data Exfiltration**: Automatic blocking of large uploads
+- **Zero-Day Threats**: Multi-factor scoring system
 
 ## Installation
 
@@ -43,14 +51,30 @@ That's it. Glance will find Java, install certificates, and launch Minecraft wit
 
 Intercepted requests are saved to `./exports/`.
 
+### Export Files
+- `*_BLOCKED.txt/json` - Confirmed malicious requests (blocked)
+- `*_potential.txt` - Suspicious activity for review
+- `all_connections.log` - Complete connection audit trail
+- `bypassed_connections.log` - Trusted host activity
+
 ## Configuration
 
 Edit `core/config.py` to customize:
 
 - `STRICT_MODE` — `False` allows known Minecraft hosts, `True` blocks everything untrusted
+- `LOG_ALL_CONNECTIONS` — Track every connection for behavioral analysis
+- `BEHAVIORAL_ANALYSIS` — Enable pattern recognition for unknown threats
+- `MAX_POST_BODY_SIZE` — Data upload limit (default: 500KB)
 - `SUSPICIOUS_URLS` — list of URL patterns to detect
 - `PATTERNS` — regex patterns for tokens (Discord, Telegram, etc.)
 - `IGNORE_HOSTS` — hosts that bypass interception
+
+### Advanced Settings
+```python
+MAX_REQUEST_FREQUENCY = 50  # Max requests per minute
+SUSPICIOUS_PORT_RANGES = [2404, 4444, 5555, 6666, 7080, 7443, 7777, 8080, 8090, 8443, 8848, 8888, 9999, 60000]
+BLOCK_SUSPICIOUS_BEHAVIOR = True  # Auto-block heuristic matches
+```
 
 ## Notes
 

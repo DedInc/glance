@@ -5,6 +5,8 @@ Minecraft directory detection and launcher utilities.
 import os
 import glob
 import subprocess
+import uuid
+import hashlib
 
 import minecraft_launcher_lib
 
@@ -79,6 +81,11 @@ def launch_minecraft(java_home, minecraft_dir, version, username="Player"):
     java_exe = get_java_executable(java_home)
 
     try:
+        # Generate offline UUID from username (consistent with Minecraft offline mode)
+        player_uuid = str(uuid.uuid3(uuid.NAMESPACE_DNS, f"OfflinePlayer:{username}"))
+        # Generate access token using MD5 hash (mimics offline authentication)
+        access_token = hashlib.md5(f"{username}{player_uuid}".encode()).hexdigest()
+
         jvm_args = [
             "-Dhttp.proxyHost=127.0.0.1",
             "-Dhttp.proxyPort=8080",
@@ -95,8 +102,8 @@ def launch_minecraft(java_home, minecraft_dir, version, username="Player"):
 
         options = {
             "username": username,
-            "uuid": "offline-uuid",
-            "token": "offline-token",
+            "uuid": player_uuid,
+            "token": access_token,
             "executablePath": java_exe,
             "jvmArguments": jvm_args,
         }
