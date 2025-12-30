@@ -1,0 +1,3 @@
+mitmproxy
+minecraft_launcher_lib
+rich
